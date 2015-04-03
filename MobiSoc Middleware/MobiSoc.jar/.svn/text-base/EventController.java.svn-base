@@ -1,0 +1,94 @@
+
+
+import java.util.HashMap;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import org.ksoap.ClassMap;
+
+import services.*;
+import ksoapDataObjects.KVMAccessPointInfo;
+import ksoapDataObjects.KVMAlerts;
+import ksoapDataObjects.KVMCBTrigger;
+import ksoapDataObjects.KVMCoordinates;
+import ksoapDataObjects.KVMEvent;
+import ksoapDataObjects.KVMEventData;
+import ksoapDataObjects.KVMLocationData;
+import ksoapDataObjects.privacyService.KVMAccessControlMgrRow;
+import ksoapDataObjects.privacyService.KVMAccessRestrictionsRow;
+import ksoapDataObjects.privacyService.KVMActionToTakeRow;
+import ksoapDataObjects.privacyService.KVMReturnAccessInfo;
+import ksoapDataObjects.privacyService.KVMHideInformationRow;
+
+public class EventController extends org.ksoap.servlet.SoapServlet {
+    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	HashMap<String, Object> instanceMap = new HashMap<String, Object>();
+		
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+  
+        ClassMap classMap = getClassMap();
+        classMap.addMapping("soapservice", "KVMCoordinates", new KVMCoordinates().getClass());
+        classMap.addMapping("soapservice", "KVMCBTrigger", new KVMCBTrigger().getClass());
+        classMap.addMapping("soapservice", "KVMEvent", new KVMEvent().getClass());
+        classMap.addMapping("soapservice", "KVMAlerts", new KVMAlerts().getClass());
+        classMap.addMapping("soapservice", "KVMEventData", new KVMEventData().getClass());        
+        classMap.addMapping("soapservice", "KVMAccessPointInfo", new KVMAccessPointInfo().getClass());
+        classMap.addMapping("soapservice", "KVMLocationData", new KVMLocationData().getClass());
+        classMap.addMapping("soapservice", "KVMAccessControlMgrRow", new KVMAccessControlMgrRow().getClass());
+        classMap.addMapping("soapservice", "KVMAccessRestrictionsRow", new KVMAccessRestrictionsRow().getClass());
+        classMap.addMapping("soapservice", "KVMActionToTakeRow", new KVMActionToTakeRow().getClass());
+        classMap.addMapping("soapservice", "KVMHideInformationRow", new KVMHideInformationRow().getClass());
+        classMap.addMapping("soapservice", "KVMReturnAccessInfo", new KVMReturnAccessInfo().getClass());
+        
+        /**
+         * 
+         * Register services with the ksoap servlet
+         * 
+         */
+        //register privacy service
+        PrivacyService priSrv = new PrivacyService();
+        instanceMap.put("PrivacyService", priSrv);
+        
+        //register event service
+        EventService eventSrv = new EventService();
+        instanceMap.put("EventService", eventSrv);
+        
+        //register the location service
+        LocationService locSrv = new LocationService();
+        instanceMap.put("LocationService", locSrv);
+        
+        //register campusmesh service
+        CampusMeshService cmpSrv = new CampusMeshService();
+        instanceMap.put("CampusMeshService", cmpSrv);
+        
+        //register echo service
+        EchoService echo= new EchoService();        
+        instanceMap.put("EchoService", echo);
+        
+        //register the campusmesh service
+        DataCacheTestService dataCache = new DataCacheTestService();
+        instanceMap.put("DataCacheTestService", dataCache);
+        
+    }
+    
+    public void doPost (HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, java.io.IOException {
+        
+            System.out.println("PATH_INFO=" + req.getPathInfo());
+            System.out.println("SERVICE=" + req.getParameter("service") );
+            super.doPost(req,res);
+    }
+    
+    protected Object getInstance (HttpServletRequest req) {
+        Object result = instanceMap.get(req.getParameter("service") );
+        return result;
+    }  
+    
+    
+    
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/build"
+   last-author="ankur"
+   kind="dir"
+   uuid="b461e069-cb66-4aa6-a3f3-1d6eec51ca1a"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   name="classes"
+   kind="dir"/>
+</wc-entries>

@@ -1,0 +1,243 @@
+package ksoapDataObjects;
+import org.kobjects.serialization.ElementType;
+import org.kobjects.serialization.KvmSerializable;
+import org.kobjects.serialization.PropertyInfo;
+import java.util.Vector;
+
+/**
+ * KVMLocationData class
+ * NOTE: must implement org.kobjects.serialization.KvmSerializable
+ * @author Ankur
+ *
+ */
+
+public class KVMLocationData implements KvmSerializable {
+
+	private String fpLat;
+
+	private String fpLon;
+
+	private String fpHt;
+
+	private Integer fpFl;
+
+	private String cnLat;
+
+	private String cnLon;
+
+	private String cnHt;
+
+	private Integer cnFl;
+
+	private Long userId;
+
+	private Vector accessPointInfo;
+	
+
+	public KVMLocationData() {
+	}
+
+	public Integer getCnFl() {
+		return cnFl;
+	}
+
+	public void setCnFl(Integer cnFl) {
+		this.cnFl = cnFl;
+	}
+
+	public String getCnHt() {
+		return cnHt;
+	}
+
+	public void setCnHt(String cnHt) {
+		this.cnHt = cnHt;
+	}
+
+	public String getCnLat() {
+		return cnLat;
+	}
+
+	public void setCnLat(String cnLat) {
+		this.cnLat = cnLat;
+	}
+
+	public String getCnLon() {
+		return cnLon;
+	}
+
+	public void setCnLon(String cnLon) {
+		this.cnLon = cnLon;
+	}
+
+	public Integer getFpFl() {
+		return fpFl;
+	}
+
+	public void setFpFl(Integer fpFl) {
+		this.fpFl = fpFl;
+	}
+
+	public String getFpHt() {
+		return fpHt;
+	}
+
+	public void setFpHt(String fpHt) {
+		this.fpHt = fpHt;
+	}
+
+	public String getFpLat() {
+		return fpLat;
+	}
+
+	public void setFpLat(String fpLat) {
+		this.fpLat = fpLat;
+	}
+
+	public String getFpLon() {
+		return fpLon;
+	}
+
+	public void setFpLon(String fpLon) {
+		this.fpLon = fpLon;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
+	public Vector getAccessPointInfo(){
+		return accessPointInfo;
+	}
+	
+	public void setAccessPointInfo(Vector accessPointInfo)
+	{
+		this.accessPointInfo = accessPointInfo; 
+	}
+	
+	
+	
+	/**
+	 * 
+	 * Methods to be implemented for KSOAP
+	 * 
+	 */
+	private static int PROP_COUNT = 10;
+
+	private static PropertyInfo PI_fpLat = new PropertyInfo("fpLat",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_fpLon = new PropertyInfo("fpLon",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_fpHt = new PropertyInfo("fpHt",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_fpFl = new PropertyInfo("fpFl",
+			ElementType.INTEGER_CLASS);
+
+	private static PropertyInfo PI_cnLat = new PropertyInfo("cnLat",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_cnLon = new PropertyInfo("cnLon",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_cnHt = new PropertyInfo("cnHt",
+			ElementType.STRING_CLASS);
+
+	private static PropertyInfo PI_cnFl = new PropertyInfo("cnFl",
+			ElementType.INTEGER_CLASS);
+
+	private static PropertyInfo PI_userId = new PropertyInfo("userId",
+			ElementType.LONG_CLASS);
+
+	private static PropertyInfo PI_accessPointInfo = new PropertyInfo("accessPointInfo",
+			ElementType.VECTOR_CLASS);
+
+	private static PropertyInfo[] PI_PROP_ARRAY = {PI_fpLat, PI_fpLon,
+			PI_fpHt, PI_fpFl, PI_cnLat, PI_cnLon, PI_cnHt, PI_cnFl, PI_userId,
+			PI_accessPointInfo};
+
+	/*
+	 * Implementation Logic for KSOAP
+	 */
+	public Object getProperty(int param) {
+		if (param == 0) {
+			return getFpLat();
+		} else if (param == 1) {
+			return getFpLon();
+		} else if (param == 2) {
+			return getFpHt();
+		} else if (param == 3) {
+			return getFpFl();
+		} else if (param == 4) {
+			return getCnLat();
+		} else if (param == 5) {
+			return getCnLon();
+		} else if (param == 6) {
+			return getCnHt();
+		} else if (param == 7) {
+			return getCnFl();
+		} else if (param == 8) {
+			return getUserId();
+		} else if (param == 9) {
+			return getAccessPointInfo();
+		} else {
+			return null;
+		}
+
+	}
+
+	public void setProperty(int param, Object obj) {
+		switch (param) {
+		case 0:
+			setFpLat((String) obj);
+			return;
+		case 1:
+			setFpLon((String) obj);
+			return;
+		case 2:
+			setFpHt((String) obj);
+			return;
+		case 3:
+			setFpFl((Integer) obj);
+			return;
+		case 4:
+			setCnLat((String) obj);
+			return;
+		case 5:
+			setCnLon((String) obj);
+			return;
+		case 6:
+			setCnHt((String) obj);
+			return;
+		case 7:
+			setCnFl((Integer) obj);
+			return;
+		case 8:
+			setUserId((Long) obj);
+			return;
+		case 9:
+			setAccessPointInfo((Vector) obj);
+			return;
+		}
+		return;
+	}
+
+	public int getPropertyCount() {
+		return PROP_COUNT;
+	}
+
+	public void getPropertyInfo(int param,
+			org.kobjects.serialization.PropertyInfo propertyInfo) {
+		propertyInfo.name = PI_PROP_ARRAY[param].name;
+		propertyInfo.nonpermanent = PI_PROP_ARRAY[param].nonpermanent;
+		propertyInfo.copy(PI_PROP_ARRAY[param]);
+	}
+
+	
+
+}

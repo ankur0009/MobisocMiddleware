@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/src/services"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="4"
+   name="EchoService.java"
+   text-time="2007-02-08T19:13:32.625000Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="de5eaee34fe5c40fa9dfd151fbce4968"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="EventService.java"
+   text-time="2007-02-08T20:17:19.015625Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="fb1706312ca889d962606ddad9c830c0"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="6"
+   name="CampusMeshService.java"
+   text-time="2007-02-15T17:02:13.078125Z"
+   committed-date="2007-03-02T19:07:53.599942Z"
+   checksum="6de9e4e2127691197769f17a0564add0"
+   last-author="ankur"
+   kind="file"
+   revision="6"/>
+<entry
+   name="TranzactService.java"
+   kind="file"
+   schedule="add"
+   revision="0"/>
+<entry
+   committed-rev="4"
+   name="LocationService.java"
+   text-time="2007-02-08T21:42:38.343750Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="d8dcb585f2cddcace9862ebf9de44338"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="DataCacheTestService.java"
+   text-time="2007-02-08T19:14:45.937500Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="7d68c074fb5f63119678d9060e464963"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="6"
+   name="PrivacyService.java"
+   text-time="2007-02-15T17:04:07.656250Z"
+   committed-date="2007-03-02T19:07:53.599942Z"
+   checksum="581ade809395f799781af94ab2592e65"
+   last-author="ankur"
+   kind="file"
+   revision="6"/>
+</wc-entries>

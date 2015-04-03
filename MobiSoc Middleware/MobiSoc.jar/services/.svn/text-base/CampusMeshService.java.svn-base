@@ -1,0 +1,210 @@
+package services;
+
+import org.ksoap.ClassMap;
+import org.ksoap.SoapObject;
+import org.ksoap.transport.HttpTransportSE;
+
+import ksoapDataObjects.privacyService.KVMHideInformationRow;
+
+import ksoapDataObjects.*;
+import ksoapDataObjects.privacyService.*;
+
+
+/**
+ * @author Maverick
+ * 
+ * Current Functionality Provided By This Service
+ * 
+ * 1. Get event data from campusmesh client and register the event with the
+ * 	  Event Service
+ * 2. Get location data from the location client.
+ * 			   ** Check with the privacy service if events can be delivered
+ * 			   ** If yes, then get the fired events from the event service
+ * 				  and deliver them to the location client
+ * 3. Get a privacy statement from the campusmesh client and register the 
+ * 	  statement with the privacy service
+ *
+ */
+public class CampusMeshService {
+
+	/**
+	 * Stuff used for ksoap communication
+	 */
+	ClassMap classMap; //map for the ksoap data object
+	static String connectString = "http://localhost:8080/EventServer/EventController?service="; //ip of the server running service
+	
+	public CampusMeshService()
+	{
+		//create mapping for kvm classes used for ksoap communication 
+		classMap = new ClassMap ();
+		classMap.addMapping("soapservice", "KVMCoordinates", new KVMCoordinates().getClass());
+        classMap.addMapping("soapservice", "KVMCBTrigger", new KVMCBTrigger().getClass());
+        classMap.addMapping("soapservice", "KVMEvent", new KVMEvent().getClass());
+        classMap.addMapping("soapservice", "KVMAlerts", new KVMAlerts().getClass());
+        classMap.addMapping("soapservice", "KVMEventData", new KVMEventData().getClass());        
+        classMap.addMapping("soapservice", "KVMAccessPointInfo", new KVMAccessPointInfo().getClass());
+        classMap.addMapping("soapservice", "KVMLocationData", new KVMLocationData().getClass());
+        classMap.addMapping("soapservice", "KVMAccessControlMgrRow", new KVMAccessControlMgrRow().getClass());
+        classMap.addMapping("soapservice", "KVMAccessRestrictionsRow", new KVMAccessRestrictionsRow().getClass());
+        classMap.addMapping("soapservice", "KVMActionToTakeRow", new KVMActionToTakeRow().getClass());
+        classMap.addMapping("soapservice", "KVMHideInformationRow", new KVMHideInformationRow().getClass());
+        classMap.addMapping("soapservice", "KVMReturnAccessInfo", new KVMReturnAccessInfo().getClass());
+	}
+	
+	
+	/**
+	 * This method gets event data from the client and registers
+	 * events with the event service
+	 * 
+	 * @return
+	 *  string value with the message good if event was registered 
+	 *  and bad otherwise
+	 */
+	public String registerEvent(KVMEvent newEvent)
+	{
+		//setup SOAP stuff to call the registerEvent method in the event service
+	    SoapObject rpc = new SoapObject("soapservice","registerEvent");
+		rpc.addProperty("X", newEvent);
+		HttpTransportSE tx = new HttpTransportSE (connectString + "EventService", "registerEvent"); 
+		tx.setClassMap (classMap);
+		
+		//call the registerEvent method in the event service
+		try{
+			return (String)tx.call(rpc);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * this method store location data and return alerts for the user after
+	 * performing the privacy check
+	 * @param locationData
+	 * @return
+	 * alerts if the exist and null otherwise
+	 */
+	public KVMAlerts storeLocation(KVMLocationData locationData)
+	{
+		KVMReturnAccessInfo accessTicket;//to check if privacy service approves
+		
+		//setup SOAP stuff to call the storeLocation method in the location service
+	    SoapObject rpc = new SoapObject("soapservice","storeLocation");
+		rpc.addProperty("X", locationData);
+		HttpTransportSE tx = new HttpTransportSE (connectString + "LocationService", "storeLocation"); 
+		tx.setClassMap(classMap);
+
+		//call the storeLocation method in the location service
+		try{
+			 Boolean ret = (Boolean)tx.call(rpc);
+			 if (ret==false)
+				 System.out.print("Location Service --> Location Store Unsuccesful");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		/**
+		 * 
+		 * check with the privacy service if alerts can be delivered
+		 * 
+		 */
+		// setup soap stuff to get alerts
+	    rpc = new SoapObject("soapservice","checkIfAccessAllowed");
+		rpc.addProperty("_pe_id", locationData.getUserId());
+		rpc.addProperty("_se_id", locationData.getUserId());
+		rpc.addProperty("_access_reason", new Integer(4)); //this means that we check for all events
+		tx = new HttpTransportSE (connectString + "PrivacyService", "checkIfAccessAllowed"); 
+		tx.setClassMap (classMap);
+			
+	
+		
+		//get the alerts from the alert service
+		try{
+			 accessTicket =  (KVMReturnAccessInfo)tx.call(rpc);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+	
+		
+		
+		
+		
+		
+		
+		/**
+		 * 
+		 * check if access is allowed
+		 */
+		
+		if(accessTicket.IsAccessAllowed == true)
+		{
+			
+			/**
+			 * 
+			 * if privacy ticket obtianed, then check if alerts are present and deliver
+			 * the alerts
+			 */
+			
+			// setup soap stuff to get alerts
+		    rpc = new SoapObject("soapservice","getAlerts");
+			rpc.addProperty("userId", locationData.getUserId());
+		
+			tx = new HttpTransportSE (connectString + "EventService", "getAlerts"); 
+			tx.setClassMap (classMap);
+				
+			
+			//get the alerts from the alert service
+				try{
+					return (KVMAlerts)tx.call(rpc);
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					return null;
+				}
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * Adds a privacy statement to the privacy module
+	 * @param accCtrlMgrRow
+	 * @param accResRow
+	 * @param accTakeRow
+	 * @param hideInfoRow
+	 * @return
+	 * if the statement was store succesfully, returns good and bad otherwise
+	 */
+	public String addPrivacyStatement(KVMAccessControlMgrRow accCtrlMgrRow, KVMHideInformationRow hideInfoRow, KVMAccessRestrictionsRow accResRow, KVMActionToTakeRow accTakeRow)
+	{
+		// setup soap stuff to call privacy service
+		SoapObject rpc = new SoapObject("soapservice","AddAC_St");
+		rpc.addProperty("objKVM_ACMrgRow", accCtrlMgrRow);
+		rpc.addProperty("objKVM_HI_Row", hideInfoRow);
+		rpc.addProperty("objKVM_AR_Row",accResRow);
+		rpc.addProperty("objKVM_ATT_Row", accTakeRow);
+		HttpTransportSE tx = new HttpTransportSE (connectString + "PrivacyService", "AddAC_St"); 
+		tx.setClassMap (classMap);
+			
+		//store the privacy statetment
+		try{
+			 if ((Boolean)tx.call(rpc) == false)
+				 return "Bad";	 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return "Bad";
+		}
+		
+		return "Good";
+	}
+}

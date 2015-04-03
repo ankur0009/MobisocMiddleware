@@ -1,0 +1,66 @@
+package dataObjects.privacyService;
+
+import ksoapDataObjects.privacyService.KVMAccessControlMgrRow;
+import core.data.dto.CoreDto;
+
+/**
+ * AccessControlMgrRow class
+ * NOTE: This class holds the row for ac_access_control_mgr table.
+ * @author NeerajR.
+ *
+ */
+
+public class AccessControlMgrRow extends CoreDto {
+
+	private static final long serialVersionUID = 1L;
+
+	/* Define *public*  members with names matching columns in fof_user table */
+	public long acm_ac_st_id;
+	public long acm_pe_id;
+	public long acm_se_id;
+	public boolean acm_st_enabled;
+	public boolean acm_access_allowed;
+	
+	public AccessControlMgrRow() {
+		super();
+	}
+
+	public AccessControlMgrRow(long acm_ac_st_id, long acm_pe_id, long acm_se_id, boolean acm_st_enabled, boolean acm_access_allowed)
+    {
+		this();
+		this.acm_ac_st_id = acm_ac_st_id;
+		this.acm_pe_id = acm_pe_id;
+		this.acm_se_id = acm_se_id;
+		this.acm_st_enabled = acm_st_enabled;
+		this.acm_access_allowed = acm_access_allowed;
+	}
+
+	public AccessControlMgrRow(KVMAccessControlMgrRow objKVM_AC_MgrRow)
+    {
+		this();
+		
+		if(objKVM_AC_MgrRow != null)
+		{
+			if(objKVM_AC_MgrRow.acm_ac_st_id != null)
+			{
+				this.acm_ac_st_id = objKVM_AC_MgrRow.acm_ac_st_id;
+			}
+			if(objKVM_AC_MgrRow.acm_pe_id != null)
+			{
+				this.acm_pe_id = objKVM_AC_MgrRow.acm_pe_id;
+			}
+			if(objKVM_AC_MgrRow.acm_se_id != null)
+			{
+				this.acm_se_id = objKVM_AC_MgrRow.acm_se_id;
+			}
+			if(objKVM_AC_MgrRow.acm_st_enabled != null)
+			{
+				this.acm_st_enabled = objKVM_AC_MgrRow.acm_st_enabled;
+			}
+			if(objKVM_AC_MgrRow.acm_access_allowed != null)
+			{
+				this.acm_access_allowed = objKVM_AC_MgrRow.acm_access_allowed;
+			}
+		}
+	}
+}

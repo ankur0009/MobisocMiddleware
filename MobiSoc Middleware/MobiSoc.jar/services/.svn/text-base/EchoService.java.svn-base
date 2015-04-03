@@ -1,0 +1,76 @@
+package services;
+import ksoapDataObjects.KVMAccessPointInfo;
+import ksoapDataObjects.KVMCBTrigger;
+import ksoapDataObjects.KVMCoordinates;
+import ksoapDataObjects.KVMEvent;
+import ksoapDataObjects.KVMLocationData;
+
+
+/**
+
+ * A simple echo Web Service
+
+ */
+
+public class EchoService {
+
+	public EchoService()
+	{}
+
+	/**
+	 * 
+	 * Echo AccessPointInfo
+	 * 
+	 */
+	public KVMAccessPointInfo echoAccessPointInfo(KVMAccessPointInfo input)
+	{
+		return input;
+	}
+	
+	/**
+	 * 
+	 * Echo KVMLocation Data
+	 * 
+	 */
+	public KVMLocationData echoLocationData(KVMLocationData input)
+	{
+		return input;
+	}
+	
+	/**
+	 * 
+	 * Echo Coordinates
+	 * 
+	 */
+	public KVMCoordinates echoCoordinates(KVMCoordinates input)
+	{	
+		return input;
+	}
+	
+	/**
+	 * 
+	 * Echo CBTrigger
+	 * 
+	 */
+	public KVMCBTrigger echoCBTrigger(KVMCBTrigger input)
+	{	
+		return input;
+	}
+	
+	/**
+	 * 
+	 * Echo KVMEvent
+	 */
+	public KVMEvent echoEvent(KVMEvent input)
+	{	
+		return input;
+	}
+	
+    /**
+     * Echo a string
+     */
+    public String echoString (String input) {
+        return input;
+    }
+    
+}

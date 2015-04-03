@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/WebContent/WEB-INF"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   name="lib"
+   kind="dir"/>
+<entry
+   committed-rev="4"
+   name="web.xml"
+   text-time="2006-10-10T19:40:04.046000Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="aaac2bd59a7420b356f0c354242235ad"
+   last-author="ankur"
+   kind="file"/>
+</wc-entries>

@@ -1,0 +1,302 @@
+package ksoapDataObjects;
+import org.kobjects.serialization.ElementType;
+import org.kobjects.serialization.KvmSerializable;
+import org.kobjects.serialization.PropertyInfo;
+import java.util.Vector;
+
+/**
+ * KVMCBTrigger class
+ * NOTE: must implement org.kobjects.serialization.KvmSerializable
+ * @author Ankur
+ *
+ */
+public class KVMCBTrigger implements KvmSerializable {
+	private String frequency;
+	private Long lastFire;
+	private Boolean timeConstraints; //true if trigger has time constraIntegers
+	private Long startTime;
+	private Long endTime;
+	private Long date;
+	private String weekDay;
+	private Boolean colocationConstraints; //true if trigger has colocation constraIntegers
+	private Long sourceUser;
+	private Vector targetUsers;
+	private Integer distanceToUsers;
+	private Boolean locationConstraints; //true if trigger has location constriants 
+	private Vector listOfPlaces;
+	private Integer distanceToPlaces;
+	
+	public KVMCBTrigger(){
+	}
+	
+	//functions to access and return the basic varables
+	public String getFrequency()
+	{
+		return frequency;
+	}
+	
+	public void setFrequency(String Frequency)
+	{
+		this.frequency = Frequency;
+	}
+	
+	public Long getLastFire()
+	{
+		return lastFire;
+	}
+	public void setLastFire(Long lastFire)
+	{
+		this.lastFire = lastFire;
+	}
+	public Boolean getTimeConstraints()
+	{
+		return timeConstraints;
+	}
+	
+	public void setTimeConstraints(Boolean timeConstraints)
+	{
+		this.timeConstraints = timeConstraints;
+	}
+	
+	public Long getStartTime()
+	{
+		return startTime;
+	}
+	
+	public void setStartTime(Long startTime)
+	{
+		this.startTime = startTime;
+	}
+	
+	public Long getEndTime()
+	{
+		return endTime;
+	}
+	
+	public void setEndTime(Long endTime)
+	{
+		this.endTime = endTime;
+	}
+	
+	public Long getDate()
+	{
+		return date;
+	}
+	
+	public void setDate(Long date)
+	{
+		this.date = date;
+	}
+	
+	public String getWeekDay()
+	{
+		return weekDay;
+	}
+	
+	public void setWeekDay(String weekDay)
+	{
+		this.weekDay = weekDay;
+	}
+	
+	public Boolean getColocationConstraints()
+	{
+		return colocationConstraints;
+	}
+	
+	public void setColocationConstraints(Boolean colocationConstraints)
+	{
+		this.colocationConstraints = colocationConstraints;
+	}
+	
+	public Long getSourceUser()
+	{
+		return sourceUser;
+	}
+	
+	public void setSourceUser(Long SourceUser)
+	{
+		this.sourceUser = SourceUser;
+	}
+	
+	public Vector getTargetUsers()
+	{
+		return targetUsers;
+	}
+	
+	public void setTargetUsers(Vector TargetUsers)
+	{
+		this.targetUsers = TargetUsers;
+	}
+	
+	public Boolean getLocationConstraints()
+	{
+		return locationConstraints;
+	}
+	
+	public void setLocationConstraints(Boolean locationConstraints)
+	{
+		this.locationConstraints = locationConstraints;
+	}
+	
+	
+	public Vector getListOfPlaces()
+	{
+		return listOfPlaces;
+	}
+	
+	public void setListOfPlaces(Vector listOfPlaces)
+	{
+		this.listOfPlaces = listOfPlaces;
+	}
+
+	public Integer getDistanceToPlaces()
+	{
+		return distanceToPlaces;
+	}
+	
+	public void setDistanceToPlaces(Integer distanceToPlaces)
+	{
+		this.distanceToPlaces = distanceToPlaces;
+	}
+	
+	public Integer getDistanceToUsers()
+	{
+		return distanceToUsers;
+	}
+	
+	public void setDistanceToUsers(Integer distanceToUsers)
+	{
+		this.distanceToUsers = distanceToUsers;
+	}
+	
+	
+	//Additional code required for KSOAP serialization
+	/**
+	 * All memeber values to be serialized by KSOAP should be defined in this array
+	 * Used by KSOAP Implementation methods
+	 */
+	
+	
+	private static PropertyInfo[] PI_PROP_ARRAY = {
+			new PropertyInfo("frequency", ElementType.STRING_CLASS),
+			new PropertyInfo("lastFire", ElementType.LONG_CLASS),
+			new PropertyInfo("timeConstraints", ElementType.BOOLEAN_CLASS),
+			new PropertyInfo("startTime", ElementType.LONG_CLASS),
+			new PropertyInfo("endTime", ElementType.LONG_CLASS),
+			new PropertyInfo("date", ElementType.LONG_CLASS),
+			new PropertyInfo("weekDay", ElementType.STRING_CLASS),
+			new PropertyInfo("colocationConstraints", ElementType.BOOLEAN_CLASS),
+			new PropertyInfo("sourceUser", ElementType.LONG_CLASS),
+			new PropertyInfo("targetUsers", ElementType.VECTOR_CLASS),
+			new PropertyInfo("distanceToUsers", ElementType.INTEGER_CLASS),
+			new PropertyInfo("locationConstraints", ElementType.BOOLEAN_CLASS),
+			new PropertyInfo("listOfPlaces", ElementType.VECTOR_CLASS),
+			new PropertyInfo("distanceToPlaces", ElementType.INTEGER_CLASS)};
+	
+	/**
+	 * Get property by parameter order
+	 * Needed for KSOAP serialization 
+	 */
+	public Object getProperty(int param) {
+		switch (param) {
+		case 0:
+			return getFrequency();
+		case 1:
+			return getLastFire();
+		case 2:
+			return getTimeConstraints();
+		case 3:
+			return getStartTime();
+		case 4:
+			return getEndTime();
+		case 5:
+			return getDate();
+		case 6:
+			return getWeekDay();
+		case 7:
+			return getColocationConstraints();
+		case 8:
+			return getSourceUser();
+		case 9:
+			return getTargetUsers();
+		case 10:
+			return getDistanceToUsers();
+		case 11:
+			return getLocationConstraints();
+		case 12:
+			return getListOfPlaces();
+		case 13:
+			return getDistanceToPlaces();
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 * Set property by parameter order
+	 * Needed for KSOAP serialization 
+	 */
+	public void setProperty(int param, Object obj) {
+		switch (param) {
+		case 0:
+			setFrequency((String) obj);
+			return;
+		case 1:
+			setLastFire((Long) obj);
+			return;
+		case 2:
+			 setTimeConstraints((Boolean) obj);
+			 return;
+		case 3:
+			 setStartTime((Long) obj);
+			 return;
+		case 4:
+			 setEndTime((Long) obj);
+			 return;
+		case 5:
+			 setDate((Long) obj);
+			 return;
+		case 6:
+			 setWeekDay((String) obj);
+			 return;
+		case 7:
+			 setColocationConstraints((Boolean) obj);
+			 return;
+		case 8:
+			 setSourceUser((Long) obj);
+			 return;
+		case 9:
+			 setTargetUsers((Vector) obj);
+			 return;
+		case 10:
+			 setDistanceToUsers((Integer) obj);
+			 return;
+		case 11:
+			 setLocationConstraints((Boolean) obj);
+			 return;
+		case 12:
+			 setListOfPlaces((Vector) obj);
+			 return;
+		case 13:
+			 setDistanceToPlaces((Integer) obj);
+			 return;
+		}
+	}
+	
+	/**
+	 * Needed for KSOAP serialization 
+	 */
+	public int getPropertyCount() {
+		return PI_PROP_ARRAY.length;
+	}
+
+	/**
+	 * Needed for KSOAP serialization 
+	 */
+	public void getPropertyInfo(int param,
+			org.kobjects.serialization.PropertyInfo propertyInfo) {
+		propertyInfo.name = PI_PROP_ARRAY[param].name;
+		propertyInfo.nonpermanent = PI_PROP_ARRAY[param].nonpermanent;
+		propertyInfo.copy(PI_PROP_ARRAY[param]);
+	}
+}

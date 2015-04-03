@@ -1,0 +1,57 @@
+package services;
+
+import dataObjects.locationinfo_location;
+
+import java.util.Hashtable;
+
+public class DataCacheTestService {
+	Hashtable locationData;
+	int noOfLocationEntries;
+	int noOfUsers;
+	
+	/**
+	public static void main(String args[])
+	{
+		DataCacheTestService X = new DataCacheTestService(); 
+		System.out.println(X.getLocation(new Long(1025)));
+	}
+	*/
+	
+	public DataCacheTestService()
+	{
+	    noOfUsers = 1000;
+		noOfLocationEntries = 500;
+		locationData = new Hashtable();
+		Long userId;
+		
+		//store location data in hashtable
+		for(int i =0; i<noOfUsers; i++)
+		{
+			userId = new Long(1000 + i);
+			locationinfo_location[] userLoc= new locationinfo_location[noOfLocationEntries];
+			for(int j = 0; j< noOfLocationEntries; j++)
+			{
+				userLoc[j] = new locationinfo_location(); 
+				userLoc[j].userid = 1000 + i;
+				userLoc[j].lat = 100+ i;
+			}
+			locationData.put(userId, userLoc);
+		}
+		System.out.println("Data Cache Test Service Started");
+	}
+	
+	public String getLocation(Long userId)
+	{
+		userId = new Long((long)(Math.random() * noOfUsers) + 1000); 
+		locationinfo_location[] userLoc = (locationinfo_location[])locationData.get(userId);
+		for(int i=0;i<noOfLocationEntries; i++)
+		{
+			if(i == (noOfLocationEntries - 1))
+			{
+				return String.valueOf(userLoc[i].lat);
+			}
+		}
+		return "Noooo";
+	}
+
+}

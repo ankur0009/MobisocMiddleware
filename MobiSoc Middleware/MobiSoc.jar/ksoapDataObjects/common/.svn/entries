@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/src/ksoapDataObjects"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="4"
+   name="KVMEvent.java"
+   text-time="2007-02-08T19:10:40.671875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="325e7b024a1851799ac74b8b331b7455"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="KVMLocationData.java"
+   text-time="2007-02-08T19:09:40.171875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="09ff0b0afe6c1300c62ed1cbc9489a25"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="KVMAccessPointInfo.java"
+   text-time="2007-02-08T19:10:54.015625Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="e9d1831759f8ec35fe188ba298b1dd19"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="KVMCBTrigger.java"
+   text-time="2007-02-08T19:10:40.718750Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="9f57b17f9051680b1d8ce430776bd353"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   name="tranzactService"
+   kind="dir"
+   schedule="add"/>
+<entry
+   committed-rev="4"
+   name="KVMAlerts.java"
+   text-time="2007-02-08T19:10:54.062500Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="f1da434985615a2493495d230d786144"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="KVMCoordinates.java"
+   text-time="2007-02-08T19:10:46.062500Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="414b2427401090412f148338f6dbac44"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="KVMEventData.java"
+   text-time="2007-02-08T19:10:48.765625Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="731db3967085446fe4fb3ebf88fa40fa"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   name="privacyService"
+   kind="dir"/>
+</wc-entries>

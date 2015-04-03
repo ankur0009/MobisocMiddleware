@@ -1,0 +1,65 @@
+package services;
+
+
+import java.util.Vector;
+
+import ksoapDataObjects.privacyService.KVMHideInformationRow;
+import dataObjects.privacyService.StatementData;
+
+import serviceFunctionanilty.privacyService.AccessControlModule;
+import serviceFunctionanilty.privacyService.AddModDelAC_St;
+
+import ksoapDataObjects.privacyService.KVMAccessControlMgrRow;
+import ksoapDataObjects.privacyService.KVMAccessRestrictionsRow;
+import ksoapDataObjects.privacyService.KVMActionToTakeRow;
+import ksoapDataObjects.privacyService.KVMReturnAccessInfo;
+
+/**
+ * PrivacyService class
+ * NOTE: This class gives interfaces for AccessControl module's services to the other services and modules.
+ * @author NeerajR.
+ *
+ */
+
+public class PrivacyService {
+
+	public KVMReturnAccessInfo checkIfAccessAllowed(Long _obj_pe_id, Long _obj_se_id, Integer _obj_access_reason)
+	{
+		long before = System.currentTimeMillis();
+		AccessControlModule objACM = new AccessControlModule();
+		KVMReturnAccessInfo ret = (KVMReturnAccessInfo)objACM.checkIfAccessAllowed(_obj_pe_id, _obj_se_id, _obj_access_reason);
+		long after = System.currentTimeMillis();
+		System.out.println("*");
+		System.out.println("*");
+		System.out.println("*");
+		System.out.println(after-before);
+		System.out.println("*");
+		System.out.println("*");
+		System.out.println("*");
+		return ret;
+	}
+	
+	public boolean AddAC_St(KVMAccessControlMgrRow objKVM_ACMrgRow, KVMHideInformationRow objKVM_HI_Row, KVMAccessRestrictionsRow objKVM_AR_Row, KVMActionToTakeRow objKVM_ATT_Row)
+	{
+		AddModDelAC_St objAddModDelAC_St = new AddModDelAC_St();
+		return(objAddModDelAC_St.AddAC_St(objKVM_ACMrgRow, objKVM_HI_Row, objKVM_AR_Row, objKVM_ATT_Row));
+	}
+	
+	public boolean DeleteAC_St(Long AccessControl_St_ID)
+	{
+		AddModDelAC_St objAddModDelAC_St = new AddModDelAC_St();
+		return(objAddModDelAC_St.DeleteAC_St(AccessControl_St_ID));
+	}
+	
+	public boolean UpdateAC_St(KVMAccessControlMgrRow objKVM_ACMrgRow, KVMHideInformationRow objKVM_HI_Row, KVMAccessRestrictionsRow objKVM_AR_Row, KVMActionToTakeRow objKVM_ATT_Row)
+	{
+		AddModDelAC_St objAddModDelAC_St = new AddModDelAC_St();
+		return(objAddModDelAC_St.UpdateAC_St(objKVM_ACMrgRow, objKVM_HI_Row, objKVM_AR_Row, objKVM_ATT_Row));
+	}
+
+	public Vector <StatementData> GetAC_StRows(Long _obj_pe_id)
+	{
+		AddModDelAC_St objAddModDelAC_St = new AddModDelAC_St();
+		return(objAddModDelAC_St.GetAC_StRows(_obj_pe_id));
+	}
+}

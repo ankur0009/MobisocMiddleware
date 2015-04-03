@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/src/ksoapDataObjects/privacyService"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="5"
+   name="KVMAccessRestrictionsRow.java"
+   text-time="2007-02-12T22:22:30.976892Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="0e2bf85f74f6bfa096f6735edf565e00"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="KVMHideInformationRow.java"
+   text-time="2007-02-12T22:48:34.273767Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="74e729c633881c1c7f5781d6e22a6a71"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="KVMActionToTakeRow.java"
+   text-time="2007-02-12T22:22:31.023767Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="d366fc13d1dff1c1ebb9e9f816dc5aa6"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="KVMReturnAccessInfo.java"
+   text-time="2007-02-12T22:22:30.914392Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="9c213c4752e82b6029cd35d05deb70c7"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="KVMAccessControlMgrRow.java"
+   text-time="2007-02-12T22:22:30.867517Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="cd339216ff1382f9b444585170c7f4b7"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+</wc-entries>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/WebContent/META-INF"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="4"
+   name="MANIFEST.MF"
+   text-time="2006-10-10T19:38:47.546000Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="b10f37c8bb1803d98c127a01d1a71cc5"
+   last-author="ankur"
+   kind="file"/>
+</wc-entries>

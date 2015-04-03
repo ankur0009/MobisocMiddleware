@@ -1,0 +1,20 @@
+package dataObjects.privacyService;
+
+import ksoapDataObjects.privacyService.KVMAccessControlMgrRow;
+import ksoapDataObjects.privacyService.KVMAccessRestrictionsRow;
+import ksoapDataObjects.privacyService.KVMActionToTakeRow;
+import ksoapDataObjects.privacyService.KVMHideInformationRow;
+
+/**
+ * StatementData class
+ * NOTE: This class holds row of each table (present for access control module) corresponding to an access_control_statement_id.
+ * @author NeerajR.
+ *
+ */
+
+public class StatementData {
+	public KVMAccessControlMgrRow objKVM_ACM_Row;
+	public KVMAccessRestrictionsRow objKVM_AR_Row;
+	public KVMActionToTakeRow objKVM_ATT_Row;
+	public KVMHideInformationRow objKVM_HI_Row;	
+}

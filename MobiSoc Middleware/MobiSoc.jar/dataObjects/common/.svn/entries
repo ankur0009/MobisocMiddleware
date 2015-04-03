@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/src/dataObjects"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="4"
+   name="CBTrigger.java"
+   text-time="2007-02-08T19:08:42.359375Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="eb48b818b3ada0d86a0926cf09bb8d6e"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="Coordinates.java"
+   text-time="2007-02-08T19:08:46.171875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="a3d58dde923cbef75bbc1f719eb1acdd"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="EventData.java"
+   text-time="2007-02-08T19:11:26.437500Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="f436389208d8e3a80a743a4a57003890"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="locationinfo_location.java"
+   text-time="2007-02-08T19:09:34.078125Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="0e232271967ae6287a16a70cfc85bae7"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="EventList.java"
+   text-time="2007-02-08T19:11:51.546875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="89b8505435cda11800d43769c52775b9"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   name="privacyService"
+   kind="dir"/>
+<entry
+   committed-rev="4"
+   name="ed_cb_trigger.java"
+   text-time="2007-02-08T19:08:27.781250Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="6423973148ee02ddd82a47aa16511344"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="Event.java"
+   text-time="2007-02-08T19:11:51.671875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="608b26c9c300537837f79ebe3182f7ea"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="ed_user_list.java"
+   text-time="2007-02-08T19:08:34.078125Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="0d4b9c4015629bd6b31f2238fe5607b0"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="TBTriggerList.java"
+   text-time="2007-02-08T19:09:23.109375Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="a3876c3a1e6bb2c32601f7ba51c387e1"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="userLocationTime.java"
+   text-time="2007-02-08T19:09:29.281250Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="34cf8f22089d5cdafdfd33d2aca48bb9"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   name="tranzactService"
+   kind="dir"
+   schedule="add"/>
+<entry
+   committed-rev="4"
+   name="ed_place_list.java"
+   text-time="2007-02-08T19:08:34.156250Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="b5155b98e98ce70ebe27b1e7e6bce7bc"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   name="select_id.java"
+   kind="file"
+   schedule="add"
+   revision="0"/>
+<entry
+   committed-rev="4"
+   name="ed_event_main.java"
+   text-time="2007-02-08T19:08:34.109375Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="902416fe6eb912994467e43e3129baaa"
+   last-author="ankur"
+   kind="file"/>
+</wc-entries>

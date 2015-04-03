@@ -1,0 +1,521 @@
+package serviceFunctionanilty.privacyService;
+
+/*
+import Coordinates;
+import locationinfo_location;
+import userLocationTime;
+*/
+
+import dataObjects.Coordinates;
+import dataObjects.locationinfo_location;
+import dataObjects.UserLocationTime;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import ksoapDataObjects.privacyService.KVMReturnAccessInfo;
+
+import dataObjects.privacyService.AC_RunTime_Contants;
+import dataObjects.privacyService.AccessControlMgrRow;
+import dataObjects.privacyService.AccessRestrictionsRow;
+import dataObjects.privacyService.ActionToTakeRow;
+import dataObjects.privacyService.HideInformationRow;
+import dataObjects.privacyService.ReturnAccessInfo;
+
+import edu.njit.sc.core.dao.SmartCampusDAO;
+
+/**
+ * AccessControlModule class
+ * NOTE: This class has the logic for checking the access control statement that apply to the passed in condition
+ * and returns whether the access to the infomation is allowed or disallowed depending on the setting (access control statments) 
+ * by the user.
+ * If the access is not specified the method checkIfAccessAllowed() returns default rule set by the system.
+ * The default rule is: if the secondary is same as primary then allow the access else disallow the access.
+ * @author NeerajR.
+ *
+ */
+
+public class AccessControlModule {
+	
+	String szQueryToGetAC_StRows = "select acm_ac_st_id, acm_access_allowed from ac_access_control_mgr where (acm_pe_id = ? AND acm_se_id = ? AND acm_st_enabled = true)";
+	
+	public KVMReturnAccessInfo checkIfAccessAllowed(Long _objPE_id, Long _objSE_id, Integer _objAccessReason)
+	{
+		
+		Object [] objParamsForGetAC_Rows = new Object[] {_objPE_id,_objSE_id };
+		AccessControlMgrRow[] objArrPM_Rows;
+
+		int nRowCount = 0;
+		
+		try
+		{
+			objArrPM_Rows = (AccessControlMgrRow[]) new SmartCampusDAO().query(szQueryToGetAC_StRows,objParamsForGetAC_Rows,AccessControlMgrRow.class );
+		}
+		catch(Exception _e)
+		{
+			_e.printStackTrace();
+			
+			return null;
+		}
+		
+		nRowCount = objArrPM_Rows.length;
+		System.out.println("nRowCount: " + nRowCount);
+		
+		for(int i = 0; i < nRowCount; i ++)
+		{
+			System.out.println("\n\nChecking for i= " + i);
+			System.out.println("acm_ac_st_id: " + objArrPM_Rows[i].acm_ac_st_id);
+			System.out.println("acm_access_allowed: " + objArrPM_Rows[i].acm_access_allowed);
+
+			//Get appropriate row corresponding to acm_ac_st_id in information table.
+			String szQueryToGetHI_Row = "select hinfo_location, hinfo_time_based_events, hinfo_loc_based_events, hinfo_all_events, hinfo_user_profile_name from ac_hide_info where hinfo_id = ?";
+			Object [] objParamsForGetHI_Row = new Object[] {new Long(objArrPM_Rows[i].acm_ac_st_id)};
+			HideInformationRow[] objArrHI_Row = null; 
+
+			//Always we will get only one row.
+			try
+			{
+				objArrHI_Row = (HideInformationRow[]) new SmartCampusDAO().query(szQueryToGetHI_Row,objParamsForGetHI_Row,HideInformationRow.class );
+			}
+			catch(Exception _e)
+			{
+				_e.printStackTrace();
+				
+				return null;
+			}
+			
+			//There should be one and only one row.
+			if(objArrHI_Row.length != 1)
+			{
+				//There is something wrong in the database. There should be one and only one row corresponding to the ac_access_control_mgr.acm_ac_st_id.
+				System.out.println("Error: Database integrity failed. There should be one row for each ac_access_control_mgr.acm_ac_st_id in ac_hide_info table. No of rows found: " + objArrHI_Row.length);
+				return null;
+			}
+			
+			
+			/*
+			 * Check if the hidden information matches with information accessed.
+			 */
+			if(((_objAccessReason.intValue() == AC_RunTime_Contants.ACCESS_INFO_LOC) && objArrHI_Row[0].hinfo_location)
+					|| ((_objAccessReason.intValue() == AC_RunTime_Contants.ACCESS_INFO_LOC_BASED_EVENTS) && objArrHI_Row[0].hinfo_loc_based_events)
+					|| ((_objAccessReason.intValue() == AC_RunTime_Contants.ACCESS_INFO_ALL_EVENTS) && objArrHI_Row[0].hinfo_all_events)
+					|| ((_objAccessReason.intValue() == AC_RunTime_Contants.ACCESS_INFO_TIME_BASED_EVENTS) && objArrHI_Row[0].hinfo_time_based_events)
+					|| ((_objAccessReason.intValue() == AC_RunTime_Contants.ACCESS_INFO_USER_PROFILE) && objArrHI_Row[0].hinfo_user_profile_name))
+			{
+				/*
+				 * As the accessing information matches the information being hidden, now we check if the access control conditions 
+				 * satisfied.
+				 */	
+				boolean AccessControlCondSatisfied = checkAccessControl(objArrPM_Rows[i].acm_ac_st_id, _objPE_id.longValue());
+
+			
+				/*
+				 * If access control condition statifies and if it is not any type of event.
+				 */
+				if(AccessControlCondSatisfied == true) 
+				{
+					ReturnAccessInfo objAccessInfo = null; 
+
+					/*
+					 * If access condition is satisfied then we need to return back with the appropriate data in return object.
+					 * 1) Returning IsAccessAllowed = true and remaining empty object.
+					 * 2) Return the whole object with only "IsAccessAllowed" = false and other 7 fields.
+					 */
+
+					if(objArrPM_Rows[i].acm_access_allowed != true)
+					{
+						/*
+						 * Into case (2) of above comment.
+						 */
+						objAccessInfo = GetActionToTakeData(objArrPM_Rows[i].acm_ac_st_id);
+					}
+					if(objAccessInfo == null)
+					{
+						objAccessInfo = new ReturnAccessInfo();
+					}
+					objAccessInfo.IsAccessAllowed = objArrPM_Rows[i].acm_access_allowed; ///Setting IsAccessAllowed to true/false depending on whether access_allowed is true/false 
+					
+					KVMReturnAccessInfo objKVM_AccessInfo = new KVMReturnAccessInfo();
+					objKVM_AccessInfo.IsAccessAllowed = objAccessInfo.IsAccessAllowed;
+					objKVM_AccessInfo.ShouldPrimaryReceiveMsg = objAccessInfo.ShouldPrimaryReceiveMsg;
+					objKVM_AccessInfo.ShouldSecondaryReceiveMsg = objAccessInfo.ShouldSecondaryReceiveMsg;
+					objKVM_AccessInfo.ShouldSystemMsgGetLogged = objAccessInfo.ShouldSystemMsgGetLogged;
+					objKVM_AccessInfo.MessageToPrimary = objAccessInfo.MessageToPrimary;
+					objKVM_AccessInfo.MessageToSecondary = objAccessInfo.MessageToSecondary;
+					objKVM_AccessInfo.MessageSystemShouldLog = objAccessInfo.MessageSystemShouldLog;
+					
+					
+					//return objAccessInfo;
+					/*
+					 * Now returning a KVM class instead of raw class.
+					 */ 
+					return objKVM_AccessInfo;
+				}
+			}
+		}
+			
+			
+			
+		/*
+		 * Very IMPORTANT.
+		 * Need to considered groups (System defined "All" or "EveryOne" group or user created groups) 
+		 */
+		
+		
+		ReturnAccessInfo objAccessInfo = new ReturnAccessInfo();
+		if(_objPE_id.longValue() == _objSE_id.longValue())
+		{
+			
+			//If the user is trying to access his own information or a event is set by himself let his access.
+			objAccessInfo.IsAccessAllowed = true;
+			System.out.println("Returning from default rule: Primary same as Secondary.");
+		}
+		else
+		{
+			/*
+			When a user is trying to access other users information the default rule is do not allow the access.
+			*/
+			objAccessInfo.IsAccessAllowed = false;
+			System.out.println("Returning from default rule: Primary different from Secondary.");
+		}
+		
+		KVMReturnAccessInfo objKVM_AccessInfo = new KVMReturnAccessInfo();
+		objKVM_AccessInfo.IsAccessAllowed = objAccessInfo.IsAccessAllowed;
+		objKVM_AccessInfo.ShouldPrimaryReceiveMsg = objAccessInfo.ShouldPrimaryReceiveMsg;
+		objKVM_AccessInfo.ShouldSecondaryReceiveMsg = objAccessInfo.ShouldSecondaryReceiveMsg;
+		objKVM_AccessInfo.ShouldSystemMsgGetLogged = objAccessInfo.ShouldSystemMsgGetLogged;
+		objKVM_AccessInfo.MessageToPrimary = objAccessInfo.MessageToPrimary;
+		objKVM_AccessInfo.MessageToSecondary = objAccessInfo.MessageToSecondary;
+		objKVM_AccessInfo.MessageSystemShouldLog = objAccessInfo.MessageSystemShouldLog;
+		
+		
+		//return objAccessInfo;
+		/*
+		 * Now returning a KVM class instead of raw class.
+		 */ 
+		return objKVM_AccessInfo;
+	}
+	
+	/**
+	 * You would need user id for primary user to find current location
+	 * @param _AC_Statement_ID
+	 * @return
+	 */
+	boolean checkAccessControl(long _AC_Statement_ID, long _pe_id)
+	{
+		//Get appropriate row corresponding to acm_ac_st_id in access_restrictons table.
+		String szQueryToGetAR_Row = "select ar_loc_based, ar_loc_longitude, ar_loc_latitute, ar_loc_height, ar_time_based, ar_time_start_time, ar_time_end_time, ar_time_date, ar_co_loc_based, ar_co_loc_user_id, ar_co_loc_distance, ar_time_date_of_the_month, ar_time_month_of_the_year, ar_time_frequency, ar_time_day_of_the_week from ac_access_restrictions where ar_id = ?";
+		Object [] objParamsForGetAR_Row = new Object[] {new Long(_AC_Statement_ID)};
+		boolean bReturnVar = true;
+
+		try
+		{
+			AccessRestrictionsRow[] objArrAR_Row = (AccessRestrictionsRow[]) new SmartCampusDAO().query(szQueryToGetAR_Row,objParamsForGetAR_Row,AccessRestrictionsRow.class );
+			//Always we will get only one row.
+		
+			if(objArrAR_Row.length != 1)
+			{
+				//There is something wrong in the database. There should be one and only one row corresponding to the ac_access_control_mgr.acm_ac_st_id.
+				System.out.println("Error: Database integrity failed. There should be one row for each ac_access_control_mgr.acm_ac_st_id in ac_access_restrictions table. No of rows found: " + objArrAR_Row.length);
+				return false;
+			}
+			
+			System.out.println("ar_co_loc_based: " + objArrAR_Row[0].ar_co_loc_based + "\nar_loc_based: " + objArrAR_Row[0].ar_loc_based + "\nar_time_based: " + objArrAR_Row[0].ar_time_based);
+
+			if(objArrAR_Row[0].ar_loc_based)
+			{
+				Object [] paramsForFindingLocDis = new Object[] {new Long(_pe_id),new Long(_pe_id) };
+				String szQueryForFindingLocDis = "select * from locationinfo_location where userid=? and mode='PlaceLab' and time = (select max(time) from locationinfo_location where userid=?)";
+				locationinfo_location[] objArrCurLocInfo = (locationinfo_location[]) new SmartCampusDAO().query(szQueryForFindingLocDis,paramsForFindingLocDis,locationinfo_location.class );
+				
+				Coordinates objUsersCurCoordinates = new Coordinates(objArrCurLocInfo[0].lat, objArrCurLocInfo[0].lon, new Float(objArrCurLocInfo[0].height).floatValue());
+				Coordinates objTargetCoordinatesOfUser = new Coordinates(objArrAR_Row[0].ar_loc_longitude, objArrAR_Row[0].ar_loc_latitute, new Float(objArrAR_Row[0].ar_loc_height).floatValue());
+
+				UserLocationTime objUsersCurLocation = new UserLocationTime();
+				UserLocationTime objTargetLocationOfUser = new UserLocationTime();
+
+				if(objArrCurLocInfo != null)
+				{
+					objUsersCurLocation.setFloor(objArrCurLocInfo[0].floor);
+					objTargetLocationOfUser.setFloor(objArrCurLocInfo[0].floor);
+					objUsersCurLocation.setMode(objArrCurLocInfo[0].mode);
+					objTargetLocationOfUser.setMode(objArrCurLocInfo[0].mode);
+					objUsersCurLocation.setNumberOfAP(objArrCurLocInfo[0].numberofap);
+					objTargetLocationOfUser.setNumberOfAP(objArrCurLocInfo[0].numberofap);
+					objUsersCurLocation.setNumberOfKnownAP(objArrCurLocInfo[0].numberofknownap);
+					objTargetLocationOfUser.setNumberOfKnownAP(objArrCurLocInfo[0].numberofknownap);
+					objUsersCurLocation.setTime(objArrCurLocInfo[0].time);
+					objTargetLocationOfUser.setTime(objArrCurLocInfo[0].time);
+					objUsersCurLocation.setLocation(objUsersCurCoordinates);
+					objTargetLocationOfUser.setLocation(objTargetCoordinatesOfUser);
+				}
+				
+				//check that the location is not very old. Not more that 3 minutes (180000 millsec)old.
+				if(objUsersCurLocation.getTime().after(new Timestamp(System.currentTimeMillis() - AC_RunTime_Contants.LOCATION_FRESHNESS)))
+				{
+					if(objUsersCurLocation.getLocation().groundDistance(objTargetLocationOfUser.getLocation()) < AC_RunTime_Contants.VARIATION_DISTANCE)
+					{
+						bReturnVar &= true;
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+				else
+				{
+					bReturnVar &= false;
+				}
+			}
+			if(objArrAR_Row[0].ar_co_loc_based)
+			{
+				Object [] paramsForFindingUsersLocDis = new Object[] {new Long(_pe_id),new Long(_pe_id) };
+				String szQueryForFindingUsersLocDis = "select * from locationinfo_location where userid=? and mode='PlaceLab' and time = (select max(time) from locationinfo_location where userid=?)";
+				locationinfo_location[] objArrUsersCurLocInfo = (locationinfo_location[]) new SmartCampusDAO().query(szQueryForFindingUsersLocDis,paramsForFindingUsersLocDis,locationinfo_location.class );
+				Coordinates objUsersCurCoordinates = new Coordinates(objArrUsersCurLocInfo[0].lat, objArrUsersCurLocInfo[0].lon, new Float(objArrUsersCurLocInfo[0].height).floatValue());
+				UserLocationTime objUsersCurLocation = new UserLocationTime();
+				
+				Object [] paramsForFindingAnotherUserLocDis = new Object[] {new Long(objArrAR_Row[0].ar_co_loc_user_id),new Long(objArrAR_Row[0].ar_co_loc_user_id) };
+				String szQueryForFindingAnotherUsersLocDis = "select * from locationinfo_location where userid=? and mode='PlaceLab' and time = (select max(time) from locationinfo_location where userid=?)";
+				locationinfo_location[] objArrAnotherUsersCurLocInfo = (locationinfo_location[]) new SmartCampusDAO().query(szQueryForFindingAnotherUsersLocDis,paramsForFindingAnotherUserLocDis,locationinfo_location.class );
+				Coordinates objTargetCoordinatesOfUser = new Coordinates(objArrAnotherUsersCurLocInfo[0].lat, objArrAnotherUsersCurLocInfo[0].lon, new Float(objArrAnotherUsersCurLocInfo[0].height).floatValue());
+				UserLocationTime objAnotherUsersCurLocation = new UserLocationTime();
+
+				if(objArrUsersCurLocInfo != null)
+				{
+					objUsersCurLocation.setFloor(objArrUsersCurLocInfo[0].floor);
+					objUsersCurLocation.setMode(objArrUsersCurLocInfo[0].mode);
+					objUsersCurLocation.setNumberOfAP(objArrUsersCurLocInfo[0].numberofap);
+					objUsersCurLocation.setNumberOfKnownAP(objArrUsersCurLocInfo[0].numberofknownap);
+					objUsersCurLocation.setTime(objArrUsersCurLocInfo[0].time);
+					objUsersCurLocation.setLocation(objUsersCurCoordinates);
+				}
+				
+				if(objAnotherUsersCurLocation != null)
+				{
+					objAnotherUsersCurLocation.setFloor(objArrAnotherUsersCurLocInfo[0].floor);
+					objAnotherUsersCurLocation.setMode(objArrAnotherUsersCurLocInfo[0].mode);
+					objAnotherUsersCurLocation.setNumberOfAP(objArrAnotherUsersCurLocInfo[0].numberofap);
+					objAnotherUsersCurLocation.setNumberOfKnownAP(objArrAnotherUsersCurLocInfo[0].numberofknownap);
+					objAnotherUsersCurLocation.setTime(objArrAnotherUsersCurLocInfo[0].time);
+					objAnotherUsersCurLocation.setLocation(objTargetCoordinatesOfUser);
+				}
+
+				//check that the location is not very old. Not more that 3 minutes (180000 millsec)old.				
+				if(objUsersCurLocation.getTime().after(new Timestamp(System.currentTimeMillis() - AC_RunTime_Contants.LOCATION_FRESHNESS))
+					&& objAnotherUsersCurLocation.getTime().after(new Timestamp(System.currentTimeMillis() - AC_RunTime_Contants.LOCATION_FRESHNESS))
+					)
+				{
+					if(objUsersCurLocation.getLocation().groundDistance(objAnotherUsersCurLocation.getLocation()) < objArrAR_Row[0].ar_co_loc_distance)
+					{
+						bReturnVar &= true;
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+				else
+				{
+					bReturnVar &= false;
+				}
+			}
+			
+			/*
+			 * Time Contraints ......
+			 */			
+			if(objArrAR_Row[0].ar_time_based)
+			{
+				GregorianCalendar objGCalForCurTime = new  GregorianCalendar();
+				GregorianCalendar objGCalForAR_Time_Date = new  GregorianCalendar();
+				
+				//Get the current year, month, date, hour, minutes, seconds.
+				int nCurYear = objGCalForCurTime.get(Calendar.YEAR);
+				int nCurMonth = objGCalForCurTime.get(Calendar.MONTH);
+				int nCurDayOfTheMonth = objGCalForCurTime.get(Calendar.DAY_OF_MONTH);
+				int nCurDayOfTheWeek = objGCalForCurTime.get(Calendar.DAY_OF_WEEK);
+				int nCurHour = objGCalForCurTime.get(Calendar.HOUR_OF_DAY);
+				int nCurMinutes = objGCalForCurTime.get(Calendar.MINUTE);
+
+				if(objArrAR_Row[0].ar_time_frequency.equalsIgnoreCase(AC_RunTime_Contants.STR_ONE_TIME))
+				{
+					objGCalForAR_Time_Date.setTimeInMillis(objArrAR_Row[0].ar_time_date.getTime());
+					
+					if((objGCalForAR_Time_Date.get(Calendar.DAY_OF_MONTH) == nCurDayOfTheMonth)
+						&& (objGCalForAR_Time_Date.get(Calendar.MONTH) == nCurMonth)
+						&& (objGCalForAR_Time_Date.get(Calendar.YEAR) == nCurYear))
+					{
+						bReturnVar &= checkIfHrMinContraintSatisfied(objArrAR_Row[0].ar_time_start_time, objArrAR_Row[0].ar_time_end_time, nCurHour, nCurMinutes);
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+				if(objArrAR_Row[0].ar_time_frequency.equalsIgnoreCase(AC_RunTime_Contants.STR_EVERYDAY))
+				{
+					bReturnVar &= checkIfHrMinContraintSatisfied(objArrAR_Row[0].ar_time_start_time, objArrAR_Row[0].ar_time_end_time, nCurHour, nCurMinutes);					
+				}
+				if(objArrAR_Row[0].ar_time_frequency.equalsIgnoreCase(AC_RunTime_Contants.STR_ONCE_A_WEEK))
+				{
+					if(nCurDayOfTheWeek == objArrAR_Row[0].ar_time_day_of_the_week)
+					{
+						bReturnVar &= checkIfHrMinContraintSatisfied(objArrAR_Row[0].ar_time_start_time, objArrAR_Row[0].ar_time_end_time, nCurHour, nCurMinutes);
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+				if(objArrAR_Row[0].ar_time_frequency.equalsIgnoreCase(AC_RunTime_Contants.STR_ONCE_A_MONTH))
+				{
+					if(nCurDayOfTheMonth == objArrAR_Row[0].ar_time_date_of_the_month)
+					{
+						bReturnVar &= checkIfHrMinContraintSatisfied(objArrAR_Row[0].ar_time_start_time, objArrAR_Row[0].ar_time_end_time, nCurHour, nCurMinutes);					
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+				if(objArrAR_Row[0].ar_time_frequency.equalsIgnoreCase(AC_RunTime_Contants.STR_ONCE_A_YEAR))
+				{
+					if((nCurMonth == objArrAR_Row[0].ar_time_month_of_the_year) 
+						&& (nCurDayOfTheMonth == objArrAR_Row[0].ar_time_date_of_the_month))
+					{
+						bReturnVar &= checkIfHrMinContraintSatisfied(objArrAR_Row[0].ar_time_start_time, objArrAR_Row[0].ar_time_end_time, nCurHour, nCurMinutes);
+					}
+					else
+					{
+						bReturnVar &= false;
+					}
+				}
+			}			
+		}
+		catch(Exception _e)
+		{
+			_e.printStackTrace();
+			return false;
+		}
+		return bReturnVar;	
+	}
+	
+	ReturnAccessInfo GetActionToTakeData(long _AC_Statement_ID)
+	{
+		ReturnAccessInfo objAccessInfo = new ReturnAccessInfo();
+		
+		//Get appropriate row corresponding to acm_ac_st_id in access_restrictons table.
+		String szQueryToGetATT_Row = "select att_type_primary_msg, att_typ_secondary_msg, att_type_sys_msg, att_primary_msg, att_secondary_msg, att_sys_msg from ac_action_to_take where att_id = ?";
+		Object [] objParamsForGetATT_Row = new Object[] {new Long(_AC_Statement_ID)};
+		
+		try
+		{
+			ActionToTakeRow[] objArrATT_Row = (ActionToTakeRow[]) new SmartCampusDAO().query(szQueryToGetATT_Row,objParamsForGetATT_Row,ActionToTakeRow.class );
+			
+			//Always we should get one row only.		
+			if(objArrATT_Row.length != 1)
+			{
+				//There is something wrong in the database. There should be one and only one row corresponding to the ac_access_control_mgr.acm_ac_st_id.
+				System.out.println("Error: Database integrity failed. There should be one row for each ac_access_control_mgr.acm_ac_st_id in att_type_primary_msg table. No of rows found: " + objArrATT_Row.length);
+				return objAccessInfo;
+			}
+			
+			objAccessInfo.ShouldPrimaryReceiveMsg = objArrATT_Row[0].att_type_primary_msg;
+			objAccessInfo.ShouldSecondaryReceiveMsg = objArrATT_Row[0].att_typ_secondary_msg;
+			objAccessInfo.ShouldSystemMsgGetLogged = objArrATT_Row[0].att_type_sys_msg;
+			objAccessInfo.MessageToPrimary = objArrATT_Row[0].att_primary_msg;
+			objAccessInfo.MessageToSecondary = objArrATT_Row[0].att_secondary_msg;
+			objAccessInfo.MessageSystemShouldLog = objArrATT_Row[0].att_sys_msg;
+			
+		}
+		catch(Exception _e)
+		{
+			_e.printStackTrace();
+		}
+		return objAccessInfo;
+	}
+	
+	boolean checkIfHrMinContraintSatisfied(Timestamp StartTime, Timestamp EndTime, int nCurHour, int nCurMinutes)
+	{
+		GregorianCalendar objGCalStartTime = new  GregorianCalendar();
+		GregorianCalendar objGCalEndTime = new  GregorianCalendar();
+		
+		objGCalStartTime.setTimeInMillis(StartTime.getTime());
+		objGCalEndTime.setTimeInMillis(EndTime.getTime());
+		
+		long nStartTime_Hours = objGCalStartTime.get(Calendar.HOUR_OF_DAY);
+		long nStartTime_Mins = objGCalStartTime.get(Calendar.MINUTE);
+		long nEndTime_Hours = objGCalEndTime.get(Calendar.HOUR_OF_DAY);
+		long nEndTime_Mins = objGCalEndTime.get(Calendar.MINUTE);
+		
+		long nCurTimeInMins = ((nCurHour * 60 )+ nCurMinutes);
+		
+		if((((nStartTime_Hours * 60) + nStartTime_Mins) <= nCurTimeInMins)
+			&& (nCurTimeInMins <= ((nEndTime_Hours * 60) + nEndTime_Mins)))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
+/*	
+	boolean checkAction(long _AC_Statement_ID, long _se_id, int _AccessingInformation, StringBuffer _MsgToSecondary)
+	{
+		//Get appropriate row corresponding to acm_ac_st_id in access_restrictons table.
+		String szQueryToGetATT_Row = "select att_type_primary_msg, att_typ_secondary_msg, att_type_sys_msg, att_primary_msg, att_secondary_msg, att_sys_msg from ac_action_to_take where att_id = ?";
+		Object [] objParamsForGetATT_Row = new Object[] {new Long(_AC_Statement_ID)};
+
+		try
+		{
+			ActionToTakeRow[] objArrATT_Row = (ActionToTakeRow[]) new SmartCampusDAO().query(szQueryToGetATT_Row,objParamsForGetATT_Row,ActionToTakeRow.class );
+			//Always we will get only one row.
+		
+			if(objArrATT_Row.length != 1)
+			{
+				//There is something wrong in the database. There should be one and only one row corresponding to the ac_access_control_mgr.acm_ac_st_id.
+				System.out.println("Error: Database integrity failed. There should be one row for each ac_access_control_mgr.acm_ac_st_id in att_type_primary_msg table. No of rows found: " + objArrATT_Row.length);
+				return false;
+			}
+			
+			if(objArrATT_Row[0].att_type_primary_msg)
+			{
+				//Send message to Primary asking if Secondary can access the information?
+			    InputStreamReader isr = new InputStreamReader( System.in );
+			    BufferedReader stdin = new BufferedReader( isr );
+				System.out.println("Secondary user (" + _se_id + ") wants to access " + _AccessingInformation + "information.\nDo you want the information to be accessed (Yes/No)?");
+			    String szInputFromUser = stdin.readLine();
+			    System.out.println( "Input from User = " + szInputFromUser );				
+				
+				if(szInputFromUser.equalsIgnoreCase("yes"))
+				{
+					return true;
+				}
+				else
+				{
+					_MsgToSecondary.append(objArrATT_Row[0].att_secondary_msg);
+					return false;
+				}
+			}
+			
+			if(objArrATT_Row[0].att_typ_secondary_msg)
+			{
+				_MsgToSecondary.append(objArrATT_Row[0].att_secondary_msg);
+				return false;
+			}
+			else
+			{
+				_MsgToSecondary.append(AC_RunTime_Contants.DEFAULT_MSG_TO_SECONDARY);
+				return false;
+			}
+			
+		}
+		catch(Exception _e)
+		{
+			_e.printStackTrace();
+			return false;
+		}
+	}
+*/	
+}

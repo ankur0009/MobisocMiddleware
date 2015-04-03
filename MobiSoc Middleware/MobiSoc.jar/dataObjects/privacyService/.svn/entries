@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2007-02-09T22:55:35.745435Z"
+   url="https://gandalf.njit.edu/svn/middleware/KSOAPServicesServer/src/dataObjects/privacyService"
+   last-author="ankur"
+   kind="dir"
+   repos="https://gandalf.njit.edu/svn/middleware"
+   revision="4"/>
+<entry
+   committed-rev="5"
+   name="AC_RunTime_Contants.java"
+   text-time="2007-02-12T22:20:51.570642Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="ffda2a3de6075199351b38f4c4929378"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="AccessControlMgrRow.java"
+   text-time="2007-02-12T22:24:32.273767Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="7c76166302d3606723de6515fc3c940c"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="AccessRestrictionsRow.java"
+   text-time="2007-02-12T22:24:32.367517Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="cd9dd288517b16a7b9eeae7392d8e938"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="ACM_MaxSeqNoRow.java"
+   text-time="2007-02-12T22:24:32.086267Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="0a86fabe72637373df9a2f85d54d0c47"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="4"
+   name="userLocationTime.java"
+   text-time="2007-02-09T17:11:36.296875Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="cec14331dfe940aae9cd66ce37b52f42"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="5"
+   name="HideInformationRow.java"
+   text-time="2007-02-12T22:35:52.539392Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="c9f362adee61c70127ad76ef6b523514"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="4"
+   name="Coordinates.java"
+   text-time="2007-02-09T17:11:19.343750Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="7d4b9337980ba027fe566d8ffd5b9ed4"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="4"
+   name="locationinfo_location.java"
+   text-time="2007-02-09T17:12:19.828125Z"
+   committed-date="2007-02-09T22:55:35.745435Z"
+   checksum="b7ed31f7b5eaf8534f78a3ed1629694e"
+   last-author="ankur"
+   kind="file"/>
+<entry
+   committed-rev="5"
+   name="ActionToTakeRow.java"
+   text-time="2007-02-12T22:24:32.195642Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="4091e9855405ca828790534d1af1560f"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="ReturnAccessInfo.java"
+   text-time="2007-02-12T22:25:12.414392Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="a04fb153d4f84343760d79fd33394678"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+<entry
+   committed-rev="5"
+   name="StatementData.java"
+   text-time="2007-02-12T22:36:24.273767Z"
+   committed-date="2007-02-12T23:18:22.881828Z"
+   checksum="ab2c0ea8f05b75766fe28c088fc3debd"
+   last-author="ankur"
+   kind="file"
+   revision="5"/>
+</wc-entries>

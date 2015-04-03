@@ -1,0 +1,158 @@
+package services;
+import java.sql.Timestamp;
+import java.util.*;
+
+import ksoapDataObjects.KVMAccessPointInfo;
+import ksoapDataObjects.KVMAlerts;
+import ksoapDataObjects.KVMEventData;
+import ksoapDataObjects.KVMLocationData;
+
+import org.ksoap.ClassMap;
+import org.ksoap.SoapObject;
+import org.ksoap.transport.HttpTransportSE;
+
+import edu.njit.sc.core.dao.SmartCampusDAO;
+
+
+public class LocationService {
+
+	public LocationService(){
+	}
+	
+	public Boolean storeLocation(KVMLocationData locationData)
+	{
+		//variables to store location information recieved from the client
+		Double fpLat, fpLon, fpHt, cnLat, cnLon, cnHt;
+		Integer fpFl, cnFl;
+		Long userId;
+		Vector accessPointInfoVector;
+
+		try{
+			//get data from location object
+			fpLat = Double.valueOf(locationData.getFpLat());
+			fpLon = Double.valueOf(locationData.getFpLon());
+			fpHt = Double.valueOf(locationData.getFpHt());
+			fpFl = locationData.getFpFl();
+			cnLat = Double.valueOf(locationData.getCnLat());
+			cnLon = Double.valueOf(locationData.getCnLon());
+			cnHt = Double.valueOf(locationData.getCnHt());
+			cnFl = locationData.getCnFl();
+			userId = locationData.getUserId();
+			accessPointInfoVector = locationData.getAccessPointInfo();
+
+			
+			//store the fingerprinting location
+			storeFingerPrintingLocation(fpLat, fpLon, fpHt, fpFl, userId);
+			//store the centroid location
+			storeCentroidLocation(cnLat, cnLon, cnHt, cnFl, userId);
+			//store Access Point Info
+			storeAccessPointInfo(accessPointInfoVector, userId);
+			
+			//return true if location was stored succesfully;
+			return true;
+		
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+
+	
+	/**
+	 * Stores the location Obtained Via Fingerprinting Method
+	 * @param fpLat
+	 * @param fpLon
+	 * @param fpHt
+	 * @param fpFl
+	 * @param userId
+	 */
+	private void storeFingerPrintingLocation(Double fpLat, Double fpLon, Double fpHt, Integer fpFl, Long userId )
+	{
+		Object[] fpLocationData = new Object[] {
+				userId,
+				new Timestamp(System.currentTimeMillis()),
+				"Finger Printing",
+				fpLat,
+				fpLon,
+				fpHt,
+				new Integer(0),
+				new Integer(0),
+				fpFl
+				};
+
+		String insertFpLocation = "INSERT INTO locationinfo_location (userid, time, mode, lat, lon, height, numberofap, numberofknownap, floor) VALUES (?,?,?,?,?,?,?,?,?)";
+		
+		try{
+			int rowsUpdated = new SmartCampusDAO().update(insertFpLocation, fpLocationData);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}	
+	}
+
+	/**
+	 * 
+	 * Stores the location obtained via Centroid Method
+	 * @param fpLat
+	 * @param fpLon
+	 * @param fpHt
+	 * @param fpFl
+	 * @param userId
+	 */
+	private void storeCentroidLocation(Double cnLat, Double cnLon, Double cnHt, Integer cnFl, Long userId )
+	{
+		Object[] fpLocationData = new Object[] {
+				userId,
+				new Timestamp(System.currentTimeMillis()),
+				"Centroid",
+				cnLat,
+				cnLon,
+				cnHt,
+				new Integer(0),
+				new Integer(0),
+				cnFl
+				};
+
+		String insertFpLocation = "INSERT INTO locationinfo_location (userid, time, mode, lat, lon, height, numberofap, numberofknownap, floor) VALUES (?,?,?,?,?,?,?,?,?)";
+		
+		try{
+			int rowsUpdated = new SmartCampusDAO().update(insertFpLocation, fpLocationData);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	/**
+	 * 
+	 * Stores Access point Info in the Database
+	 * @param accessPointInfo
+	 */
+	private void storeAccessPointInfo(Vector accessPointInfoVector, Long userId)
+	{
+		for(int i=0; i<accessPointInfoVector.size(); i++)
+		{
+			KVMAccessPointInfo accessPointInfo= (KVMAccessPointInfo)accessPointInfoVector.elementAt(i);
+			
+			Object[] accessPointData = new Object[] {
+					userId,
+					accessPointInfo.getMacId(),
+					new Timestamp(System.currentTimeMillis()),
+					Float.valueOf(accessPointInfo.getSignalStrength()),
+					accessPointInfo.getSsId(),
+					accessPointInfo.getIsPointKnown()
+					};
+			  
+			String insertAPData = "INSERT INTO locationinfo_userdata (userid, macid, time, signalstrength, name, known) VALUES (?,?,?,?,?,?)";
+			
+			try{
+				int rowsUpdated = new SmartCampusDAO().update( insertAPData, accessPointData);
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}							
+		}
+	}
+}
